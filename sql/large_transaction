@@ -1,0 +1,15 @@
+#!/bin/bash 
+
+function catch_int() {
+        echo
+	echo "stopped"
+	exit 0
+}
+
+trap 'catch_int' INT
+	for i in {1..8}
+	do 
+		psql postgres -f $MTM_SQL/lt.sql > /dev/null
+		echo $i
+		i+=1
+	done

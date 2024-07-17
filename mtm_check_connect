@@ -1,0 +1,10 @@
+#!/bin/bash
+
+dbname="postgres"
+
+echo -n "WAITING CONNECTION"
+while [ "$($MTM_BIN/psql -p 5432 -Atc "SELECT gen_members_online FROM mtm.status();" $dbname 2> /dev/null)" != "{1,2,3}" ]; do
+	sleep 0.5
+	echo -n "."
+done
+echo "DONE" && echo

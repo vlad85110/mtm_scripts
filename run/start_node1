@@ -1,0 +1,3 @@
+#!/bin/bash
+
+$MTM_BIN/pg_ctl -D $CLUSTER_DIR/data1 -l $CLUSTER_DIR/logfile1 start > /dev/null 2>&1

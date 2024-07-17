@@ -1,0 +1,50 @@
+#!/bin/bash
+
+if [[ ! -n "$1" ]]; then
+  echo "source mtm_env <path_to_pgsql> <cluster_dir>"
+  return 1
+fi
+
+echo $PATH
+
+if [[ ! -n "$2" ]]; then
+  echo "source mtm_env <path_to_pgsql> <cluster_dir>"
+  return 1
+fi
+
+
+if [ "$(basename $SHELL)" = "zsh" ]; then
+    base_dir=$(cd "$(dirname "$0")" && pwd)
+else
+    base_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+fi
+
+pgsql_dir=$1
+cluster_dir=$2
+
+if [[ "${pgsql_dir#/}" == "$pgsql_dir" ]]; then
+  echo "Error: $pgsql_dir is not an absolute path"
+  return 1
+fi
+
+if [[ "${cluster_dir#/}" == "$cluster_dir" ]]; then
+  echo "Error: $cluster_dir is not an absolute path"
+  return 1
+fi
+
+if [[ ! -d "$pgsql_dir" ]]; then
+  echo "Error: $pgsql_dir doesn't exist"
+  return 1
+fi
+
+if [[ $pgsql_dir == */ ]]; then
+  pgsql_dir="${pgsql_dir%/}"
+fi
+
+export MTM_BIN=$pgsql_dir/bin
+export MTM_CONF_DIR=$base_dir/config
+export PATH=$PATH:$base_dir:$base_dir/run/:$base_dir/sql:$MTM_BIN
+export CLUSTER_DIR=$cluster_dir
+export MTM_SQL=$base_dir/sql
+
+echo "Success"

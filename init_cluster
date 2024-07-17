@@ -1,0 +1,46 @@
+#!/bin/bash
+
+if [[ ! -n "$MTM_BIN" || ! -n "$MTM_CONF_DIR" || ! -n "$CLUSTER_DIR" ]]; then
+    echo "Error: run \"source mtm_env <path_to_pgsq> <cluster_dir>\" before the initialization"
+    exit 1
+fi
+
+function catch_error() {
+	echo "an error occured, stopping cluster"
+	stop_cluster $CLUSTER_DIR $PG_BIN
+	exit 1
+}
+
+# trap 'catch_error' ERR INT
+
+stop_cluster > /dev/null
+
+for ((i = 1; i <= 3; i++))
+do 
+    if [[ -d "$CLUSTER_DIR/data$i" ]]; then
+        rm -r $CLUSTER_DIR/data$i
+    fi
+
+    echo > $CLUSTER_DIR/logfile$i
+    $MTM_BIN/initdb -D $CLUSTER_DIR/data$i > /dev/null 2>&1 
+    cat $MTM_CONF_DIR/node.conf >> $CLUSTER_DIR/data$i/postgresql.conf
+done
+
+echo "port = 5431" >> $CLUSTER_DIR/data2/postgresql.conf
+echo "port = 5433" >> $CLUSTER_DIR/data3/postgresql.conf
+
+dbname="postgres"
+
+start_cluster
+
+for ((i = 1; i <= 3; i++))
+do 
+    $MTM_BIN/psql -p 543$i -c "create table t(id int, t text);" $dbname
+done
+
+$MTM_BIN/psql -p 5432 -c "CREATE EXTENSION multimaster;" $dbname
+$MTM_BIN/psql -p 5432 -Atc "SELECT mtm.init_cluster('dbname=$dbname host=localhost port=5432','{\"dbname=$dbname host=localhost port=5431\", \"dbname=$dbname  host=localhost port=5433\"}');" $dbname
+
+mtm_check_connect
+
+stop_cluster

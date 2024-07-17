@@ -1,0 +1,5 @@
+#!/bin/bash
+
+stop_node1
+stop_node2
+stop_node3
