@@ -1,0 +1,15 @@
+#!/bin/bash
+
+stop_node2 
+clear_logs 
+
+large_transaction
+large_transaction
+large_transaction
+
+pgbench postgres -T 60 -P 2
+
+start_node2
+
+pgbench postgres -T 60 -P 2
+

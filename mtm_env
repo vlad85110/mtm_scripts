@@ -5,8 +5,6 @@ if [[ ! -n "$1" ]]; then
   return 1
 fi
 
-echo $PATH
-
 if [[ ! -n "$2" ]]; then
   echo "source mtm_env <path_to_pgsql> <cluster_dir>"
   return 1
@@ -43,7 +41,7 @@ fi
 
 export MTM_BIN=$pgsql_dir/bin
 export MTM_CONF_DIR=$base_dir/config
-export PATH=$PATH:$base_dir:$base_dir/run/:$base_dir/sql:$MTM_BIN
+export PATH=$PATH:$base_dir:$base_dir/run/:$base_dir/sql:$base_dir/monitor_dir:$MTM_BIN
 export CLUSTER_DIR=$cluster_dir
 export MTM_SQL=$base_dir/sql
 

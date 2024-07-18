@@ -42,8 +42,5 @@ $MTM_BIN/pgbench -i postgres > /dev/null  2>&1
 $MTM_BIN/pgbench -i postgres -p 5431  > /dev/null  2>&1
 $MTM_BIN/pgbench -i postgres -p 5433  > /dev/null  2>&1
 
-$MTM_BIN/psql -p 5432 -c "CREATE EXTENSION multimaster;" $dbname
-$MTM_BIN/psql -p 5432 -Atc "SELECT mtm.init_cluster('dbname=$dbname host=localhost port=5432','{\"dbname=$dbname host=localhost port=5431\", \"dbname=$dbname  host=localhost port=5433\"}');" $dbname
-mtm_check_connect
 
 stop_cluster
