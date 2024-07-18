@@ -1,0 +1,1 @@
+psql postgres -x -c "select slot_name, restart_lsn, confirmed_flush_lsn, wal_status  from pg_replication_slots;"

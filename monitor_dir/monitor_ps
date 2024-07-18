@@ -1,0 +1,3 @@
+#!/bin/bash
+
+ps -ef | grep wal | grep -v grep | grep -v watch | awk '{print $2, $3, $9, $11}'

@@ -1,0 +1,1 @@
+du -sh $CLUSTER_DIR/data1/pg_wal/

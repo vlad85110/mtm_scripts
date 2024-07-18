@@ -1,0 +1,4 @@
+#!/bin/bash
+
+cat $CLUSTER_DIR/logfile2 | grep -e 'receiver mtm-logrep-receiver-2-1 is exiting to reconnect in another mode' -e 'starting receiver: replication_node = 1, mode = recovery' | awk '{print $2, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19}' | tail -2
+

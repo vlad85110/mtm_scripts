@@ -1,0 +1,3 @@
+#!/bin/bash
+
+watch -n 0.5 "cat $CLUSTER_DIR/logfile1 | grep 'recovery complete' | tail -1"

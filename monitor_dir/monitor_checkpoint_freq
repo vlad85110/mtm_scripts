@@ -1,0 +1,1 @@
+cat $CLUSTER_DIR/logfile1 | grep -e 'checkpoint complete' | tail -20 | awk '{print $2, $5, $6, $7}'

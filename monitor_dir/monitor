@@ -1,0 +1,28 @@
+#!/bin/bash
+
+if tmux has-session -t monitor 2>/dev/null; then
+    tmux attach-session -t monitor
+    exit 0
+fi
+
+tmux new-session -d -s monitor
+
+tmux split-window -v
+
+tmux select-pane -t 0
+tmux split-window -h
+
+tmux select-pane -t 0
+tmux send-keys "tail -f ~/cluster/logfile1" C-m
+
+tmux select-pane -t 1
+#tmux send-keys "tail -f ~/cluster/logfile2" C-m
+tmux send-keys "monitor_recovery_time" C-m
+
+tmux select-pane -t 2
+tmux send-keys "watch monitor_ps" C-m
+
+tmux select-pane -t 2
+tmux resize-pane -D 5
+
+tmux attach-session -t monitor
