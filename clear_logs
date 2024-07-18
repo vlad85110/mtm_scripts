@@ -1,0 +1,5 @@
+#!/bin/bash
+
+echo > $CLUSTER_DIR/logfile1
+echo > $CLUSTER_DIR/logfile2
+echo > $CLUSTER_DIR/logfile3
