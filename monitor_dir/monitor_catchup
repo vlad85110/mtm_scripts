@@ -1,0 +1,27 @@
+#!/bin/bash
+
+if tmux has-session -t catchup 2>/dev/null; then
+    tmux attach-session -t catchup
+    exit 0
+fi
+
+tmux new-session -d -s catchup
+
+tmux split-window -v
+
+tmux select-pane -t 0
+tmux send-keys 'watch -n 0.5 stat_catchup 5432' C-m
+
+tmux select-pane -t 1
+tmux send-keys 'watch -n 0.5 stat_catchup 5433' C-m
+
+# tmux select-pane -t 2
+# tmux send-keys 'watch -n 0.5 "psql postgres -x -c \"select pg_current_wal_lsn(),pg_current_wal_insert_lsn(); \" "' C-m
+
+# tmux select-pane -t 3
+# tmux send-keys "watch -n 0.5 monitor_ps" C-m
+
+# tmux select-pane -t 3
+# tmux resize-pane -D 7
+
+tmux attach-session -t catchup

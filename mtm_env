@@ -44,5 +44,6 @@ export MTM_CONF_DIR=$base_dir/config
 export PATH=$PATH:$base_dir:$base_dir/run/:$base_dir/sql:$base_dir/monitor_dir:$MTM_BIN
 export CLUSTER_DIR=$cluster_dir
 export MTM_SQL=$base_dir/sql
+export MTM_NODES_CNT=3
 
 echo "Success"

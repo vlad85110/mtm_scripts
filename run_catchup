@@ -1,15 +1,11 @@
 #!/bin/bash
 
-stop_node2 
-clear_logs 
+mtm_check_connect
 
-large_transaction
-large_transaction
-large_transaction
+stop_node2
+clear_logs
 
-pgbench postgres -T 60 -P 2
+pgbench postgres -T 100 -j 20 -c 100 --max-tries=100 --rate=3000 -P 2
 
 start_node2
-
-pgbench postgres -T 60 -P 2
-
+mtm_check_connect

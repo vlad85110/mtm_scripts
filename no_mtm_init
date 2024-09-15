@@ -1,29 +1,22 @@
-#!/bin/bash
+#/bin/bash
 
 if [[ ! -n "$MTM_BIN" || ! -n "$MTM_CONF_DIR" || ! -n "$CLUSTER_DIR" ]]; then
     echo "Error: run \"source mtm_env <path_to_pgsq> <cluster_dir>\" before the initialization"
     exit 1
 fi
 
-function catch_error() {
-	echo "an error occured, stopping cluster"
-	stop_cluster $CLUSTER_DIR $PG_BIN
-	exit 1
-}
-
-# trap 'catch_error' ERR INT
-
 stop_cluster > /dev/null
+clear_logs
 
 for ((i = 1; i <= 3; i++))
-do 
+do
     if [[ -d "$CLUSTER_DIR/data$i" ]]; then
         rm -r $CLUSTER_DIR/data$i
     fi
 
     echo > $CLUSTER_DIR/logfile$i
-    $MTM_BIN/initdb -D $CLUSTER_DIR/data$i > /dev/null 2>&1 
-    cat $MTM_CONF_DIR/node.conf >> $CLUSTER_DIR/data$i/postgresql.conf
+    $MTM_BIN/initdb -D $CLUSTER_DIR/data$i > /dev/null 2>&1
+    cat $MTM_CONF_DIR/no_mtm.conf >> $CLUSTER_DIR/data$i/postgresql.conf
 done
 
 echo "port = 5431" >> $CLUSTER_DIR/data2/postgresql.conf
@@ -33,14 +26,13 @@ dbname="postgres"
 
 start_cluster
 
-for ((i = 1; i <= 3; i++))
-do 
-    $MTM_BIN/psql -p 543$i -c "create table t(id int, t text);" $dbname
+for ((i = 1; i <= $MTM_NODES_CNT; i++))
+do
+    $MTM_BIN/psql -p 543$i -f $MTM_SQL/tables.sql $dbname
 done
 
 $MTM_BIN/pgbench -i postgres > /dev/null  2>&1
 $MTM_BIN/pgbench -i postgres -p 5431  > /dev/null  2>&1
 $MTM_BIN/pgbench -i postgres -p 5433  > /dev/null  2>&1
-
 
 stop_cluster

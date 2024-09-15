@@ -1,0 +1,4 @@
+#!/bin/bash
+
+port=$1
+psql -p $port postgres -c "select * from mtm.stat_catchup();"
